@@ -17,6 +17,7 @@ function App() {
     })
 
     socket.addEventListener('message',(event)=>{
+      // console.log(event)
       // console.log(event.data);
       const ltp = JSON.parse(event.data)
       setLtpData(ltp)
@@ -35,10 +36,9 @@ function App() {
     <div className="App" >
 
       <LastTradedPrice ltp={ltpData} />
-      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={1}/>
-      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={3}/>
-      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={5}/>
-      
+      <CandlestickChart data={candleStickData} interval={1} instrument="Nifty"/>
+      <CandlestickChart data={candleStickData} interval={3} instrument="Nifty"/>
+      <CandlestickChart data={candleStickData} interval={5} instrument="Nifty"/>
     </div>
   );
 }
