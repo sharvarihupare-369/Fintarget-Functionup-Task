@@ -1,36 +1,44 @@
-import logo from './logo.svg';
 import './App.css';
-import io from 'socket.io-client'
+import {io} from 'socket.io-client'
 import { useEffect, useState } from 'react';
-
-// const socket = io('wss://functionup.fintarget.in/ws?id=fintarget-functionup');
-
-const socket = io('wss://functionup.fintarget.in/ws?id=fintarget-functionup');
+import LastTradedPrice from './components/LastTradedPrice';
+import CandlestickChart from './components/CandlestickChart';
 
 function App() {
-  const [ltpData,setLtpData] = useState({});
 
+  const [ltpData,setLtpData] = useState({});
+  const [candleStickData,setCandleStickData] = useState([])
+  
   useEffect(()=>{
-     socket.on("connect",()=>{
-      console.log('Connected to Socket');
-     });
-     socket.on('message',(data)=>{
-      console.log(data)
-      const ltp = JSON.parse(data);
-      setLtpData(ltp);
-     })
+    const socket = new WebSocket('wss://functionup.fintarget.in/ws?id=fintarget-functionup');
+  
+    socket.addEventListener('open',()=>{
+      console.log('Connected to WebSocket');
+    })
+
+    socket.addEventListener('message',(event)=>{
+      // console.log(event.data);
+      const ltp = JSON.parse(event.data)
+      setLtpData(ltp)
+      setCandleStickData((prev)=>[...prev,ltp])
+    })
      return () => {
-      socket.disconnect();
+      // socket.disconnect();
+      socket.close();
      }
   },[])
 
-  console.log(ltpData)
+
+
 
   return (
-    <div className="App">
-      
-      
+    <div className="App" >
 
+      <LastTradedPrice ltp={ltpData} />
+      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={1}/>
+      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={3}/>
+      <CandlestickChart data={candleStickData} width={800} ratio={1} interval={5}/>
+      
     </div>
   );
 }
