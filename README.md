@@ -1,1 +1,1 @@
-# algowiz_coding_assignment
+# Fintarget-Functionup-Task
